@@ -1,0 +1,41 @@
+to create a cluster of service in aws using aws parallelcluster
+
+
+In here we can take ubuntu machine 
+Step-1: install python
+Step-2: install aws cli and configure with aws access and secret keys
+Step-3: install python3.7 /7
+Step-4: set the env path fpr python3.7
+Step-5: install pip module
+Step-6: pcluster configure <name.yml>
+# aws configure
+
+# pcluster configure
+
+# ((follow this link --https://docs.aws.amazon.com/parallelcluster/latest/ug/getting-started-configuring-parallelcluster.html))
+
+# once you completed the above the step follow the forwarded step to launch a cluster
+
+# pcluster create <name>
+
+# pcluster configure --config <	NAME(hello).yaml>
+
+# ls
+
+# cat <file name>
+
+# pcluster describe-cluster --cluster-name <NAME(hello)>
+
+# pcluster create -c hello.yml -r us-east-2 <name> ---- which create a cluster (master node-- compute node)
+
+# pcluster list -c <configuration file name> -r <region>  --- list the cluster using particular configuration filey
+
+# pcluster ssh worldtest -i /pass.pem  --- to connect to the cluster
+
+
+# pcluster create -c hello.yml -r us-east-2 test-1 --tags '{ "key1" : "Value1"}'
+
+
+
+pcluster create -c hello.yml -r us-west-1 hellotest --tags '{ "HPC-POC" : "COST"}'
+
