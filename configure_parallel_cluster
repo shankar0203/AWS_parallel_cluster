@@ -2,10 +2,26 @@ to create a cluster of service in aws using aws parallelcluster
 
 
 In here we can take ubuntu machine 
-Step-1: install python
-Step-2: install aws cli and configure with aws access and secret keys
+1. install python
+2. instal pip
+3. add path to python
+4. install pcluster
+5. install aws cli
+6. configure the aws cli 
+
+folow the full link
+
+  https://docs.aws.amazon.com/parallelcluster/latest/ug/install-linux.html
+
+
+ install aws cli and configure with aws access and secret keys
+   apt-get install awscli.
 Step-3: install python3.7 /7
+  apt-get install python3-pip
+    
 Step-4: set the env path fpr python3.7
+        linl:  https://www.edureka.co/blog/add-python-to-path/
+        type :  export PATH=”$PATH:/usr/bin/python”
 Step-5: install pip module
 Step-6: pcluster configure <name.yml>
 # aws configure
