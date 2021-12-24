@@ -55,3 +55,296 @@ Step-6: pcluster configure <name.yml>
 
 pcluster create -c hello.yml -r us-west-1 hellotest --tags '{ "HPC-POC" : "COST"}'
 
+
+
+
+
+===================
+following steps
+================
+
+prerequiresite:
+
+1. install python based on your pcluster version
+
+2. install aws cli and configure it 
+
+3. install pcluster (v2 / v3)
+   if version - 3 means you have to follow 
+   install python3 and set env variable and also sev env
+    link: https://www.digitalocean.com/community/tutorials/how-to-install-python-3-and-set-up-a-programming-environment-on-an-ubuntu-20-04-server
+
+4. install parallel cluster
+   for version -2 
+   link: https://docs.aws.amazon.com/parallelcluster/latest/ug/install-linux.html
+  
+   for version -3
+   link: https://docs.aws.amazon.com/parallelcluster/latest/ug/install-v3-virtual-environment.html
+
+
+-------------------------------------
+# configure the aws cli in your machine
+  aws configure
+
+# check the parallell cluster version
+  pcluster version
+
+# configure the parallel cluster configuration file
+---------------------------------------------------
+  pcluster configure --config <	NAME(hello).yaml>
+
+# ((follow this link --https://docs.aws.amazon.com/parallelcluster/latest/ug/getting-started-configuring-parallelcluster.html))
+
+# once you completed the above the step follow the forwarded step to launch a cluster
+
+# list the pcluster configuration file in ymal format
+-----------------------------------------------------
+  ls
+
+# create a cluster by using the pcluster configuration file
+-----------------------------------------------------------
+  pcluster create -c hello.yml -r us-east-2 <name> ---- which create a cluster (master node-- compute node)
+
+
+# lsit the instance which run by the cluster
+--------------------------------------------
+  pcluster instances -c <configuration file name> -r region <cluster name>  ---- list the instnce which created through cluster
+
+# describe the cluster
+----------------------
+  pcluster describe-cluster --cluster-name <NAME(hello)>
+
+# list the cluster by using the configuration file name
+-------------------------------------------------------
+  pcluster list -c <configuration file name> -r <region>  --- list the cluster using particular configuration file
+
+# to connect the to resource which create by cluster node
+---------------------------------------------------------
+  pcluster ssh worldtest -i /pass.pem  --- to connect to the cluster
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+pcluster version-3 cmds
+
+# update the machine
+--------------------
+  apt-get update
+
+# install python3
+-----------------
+   apt-get install python3
+
+# update pip3 module
+--------------------
+  python3 -m pip install --upgrade pip
+
+# install virtual env
+---------------------
+  python3 -m pip install --user --upgrade virtualenv
+
+# name it for virtual env
+-------------------------
+  python3 -m virtualenv ~/apc-ve
+
+# activate our vurtual env
+--------------------------
+  source ~/apc-ve/bin/activate
+
+# install aws parallel cluster version-3
+----------------------------------------
+  python3 -m pip install --upgrade "aws-parallelcluster"
+
+# install node version
+----------------------
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+  chmod ug+x ~/.nvm/nvm.sh
+  source ~/.nvm/nvm.sh
+  nvm install --lts
+  node --version
+
+# chec the pcluster version 
+---------------------------
+  pcluster version
+
+# to upgrade aws parallelcluster version latest
+------------------------------------------------
+  python3 -m pip install --upgrade "aws-parallelcluster"
+
+# install aws cli
+-----------------
+  apt-get install awscli
+
+# configure the aws cli
+-----------------------
+  aws configure
+
+# configure the parallelcluster
+-------------------------------
+  pcluster configure --config <configuration file>.yaml
+
+# create a cluster using parallel cluster configuration file
+------------------------------------------------------------
+  pcluster create-cluster --cluster-name <cluster name> --cluster-configuration <cluster configuration file>.yaml
+
+# describe the parallel cluster 
+-------------------------------
+  pcluster create-cluster --cluster-name test-cluster --cluster-configuration cluster-config.yaml
+
+# describe the cluster 
+----------------------
+  pcluster describe-cluster --cluster-name <cluster name>
+
+# to convert the pcluster configuration version - 2 to version - 3
+------------------------------------------------------------------
+  pcluster3-config-converter --config-file <input_file> --output-file <output_file>
+
+# create a pcluster version after convert the file to (v-2 to v3)
+-----------------------------------------------------------------
+  pcluster create-cluster --cluster-name tag-test --cluster-configuration vtag.yml
+
+
+
+pcluster version -3 raw configuration file
+------------------------------------------
+
+github link: https://github.com/aws-samples/aws-parallelcluster-cost-allocation-tags
+
+note:
+
+1. install all the pcluster , python3 , aws cli
+
+2. launch the cloud formation template for launch the vpc , subnet (both private , public , igw , nat-gateway)
+
+3. create a pcluster configuration file by using
+   ---------------------------------------------
+   pcluster configure --config <file name>.yml
+
+4. then convert the version -2 pcluster configuration file to version -3 file by using the following cmd
+   -----------------------------------------------------------------------------------------------------
+   pcluster create-cluster --cluster-name tag-test --cluster-configuration vtag.yml
+
+
+version -2 configuration file
+-----------------------------
+
+machine= 2
+machine_type= t2.micro
+os= linux
+vpc= 1 
+subnet= 2(both public and private)
+igw= 1
+nat_gw= 1 along with (E_IP)
+cloud watch
+cloud watch logs
+dynamo db table
+iam
+lambda fn
+sqs
+sg
+Ebs volume= 3  master-2(35gb,20), compute-1
+launch template 
+
+
+
+
+version -3 configuration file
+----------------------------
+
+[aws]
+aws_region_name = us-west-1
+
+[aliases]
+ssh = ssh {CFN_USER}@{MASTER_IP} {ARGS}
+
+[global]
+cluster_template = default
+update_check = true
+sanity_check = true
+
+[cluster default]
+key_name = shankar_key
+scheduler = sge
+master_instance_type = t2.micro
+base_os = alinux2
+vpc_settings = default
+compute_instance_type = t2.micro
+initial_queue_size = 1
+max_queue_size = 2
+maintain_initial_size = true
+
+[vpc default]
+vpc_id = vpc-051153b47e658bf6d
+master_subnet_id = subnet-08fe4e86e22f37c3a
+compute_subnet_id = subnet-0213f535f063ae86b
+use_public_ips = false
+
+
+=====================
+
+
+version-3 after closudformation template deployed
+-------------------------------------------------
+
+configuration file - vtag.yml
+-----------------------------
+
+Region: us-east-2
+Image:
+  Os: alinux2
+Tags:
+  - Key: Project
+    Value: HPC3.0
+  - Key: aws-parallelcluster-jobid
+    Value: NA
+  - Key: aws-parallelcluster-partition
+    Value: NA
+  - Key: aws-parallelcluster-account
+    Value: NA
+  - Key: aws-parallelcluster-jobname
+    Value: NA
+  - Key: aws-parallelcluster-project
+    Value: NA
+SharedStorage:
+  - MountDir: /shared
+    Name: default-ebs
+    StorageType: Ebs
+HeadNode:
+  InstanceType: t2.micro
+  Networking:
+    SubnetId: subnet-07ae67425076c8ea5	
+  Ssh:
+    KeyName: p_cluster_s
+  CustomActions:
+    OnNodeConfigured:
+      Script: s3://aws-parallel-cluster/aws-parallelcluster-cost-allocation-tags-master/post_install.sh
+  Iam:
+    AdditionalIamPolicies:
+      - Policy: arn:aws:iam::484479102124:policy/pclusterTagsAndBudget
+    S3Access:
+      - BucketName: aws-parallel-cluster
+Scheduling:
+  Scheduler: slurm
+  SlurmQueues:
+    - Name: default-queue
+      CustomActions:
+        OnNodeConfigured:
+          Script: s3://aws-parallel-cluster/aws-parallelcluster-cost-allocation-tags-master/post_install.sh
+      Iam:
+        AdditionalIamPolicies:
+          - Policy: arn:aws:iam::484479102124:policy/pclusterTagsAndBudget
+        S3Access:
+          - BucketName: aws-parallel-cluster
+      Networking:
+        SubnetIds:
+          - subnet-0678e0b3e25bc69e5
+      ComputeResources:
+        - Name: default-resource
+          MaxCount: 10
+          InstanceType: t2.micro
+
+
+5. then update the pcluster version -3 configuration file with vpc_id , public-subnet-id , private-subnet-id which already created by cloudformation stack
+
+6. then run th pcluster configuration file it will create a cluster node
