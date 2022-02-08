@@ -223,7 +223,7 @@ note:
 
 4. then convert the version -2 pcluster configuration file to version -3 file by using the following cmd
    -----------------------------------------------------------------------------------------------------
-   pcluster create-cluster --cluster-name tag-test --cluster-configuration vtag.yml
+   pcluster3-config-converter --config-file <input_file> --output-file <output_file>
 
 
 version -2 configuration file
